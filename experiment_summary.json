@@ -1,0 +1,63 @@
+{
+  "seed": 20260822,
+  "n_splits_unique": 95,
+  "n_duplicate_rows_removed": 5,
+  "frac_AUROC_below_chance": 0.2631578947368421,
+  "DNR_maha": {
+    "min": 0.030414575445173616,
+    "max": 11.93988524940436,
+    "median": 0.9229050392540765,
+    "frac_above_1": 0.4105263157894737
+  },
+  "DNR_by_setting": {
+    "min": {
+      "Setting 1": 0.030414575445173616,
+      "Setting 2": 0.1549713037248915
+    },
+    "median": {
+      "Setting 1": 1.0935594871815348,
+      "Setting 2": 0.6876558641372131
+    },
+    "max": {
+      "Setting 1": 11.93988524940436,
+      "Setting 2": 3.6420603274226817
+    }
+  },
+  "spearman_DNR_vs_AUROC": {
+    "AUROC_maha": -0.7233762597984322,
+    "AUROC_knn": -0.6427631578947368,
+    "AUROC_msp": 0.27295632698768196
+  },
+  "spearman_competing_predictors_vs_AUROC_maha": {
+    "DNR_maha": -0.7233762597984322,
+    "DNR_euclid": -0.6648096304591266,
+    "DNR_energy": -0.6955347144456887,
+    "MMD_ratio": -0.4923012318029115,
+    "MMD_drift": -0.26090425531914896,
+    "MMD_novel": 0.3715145576707727,
+    "PAD_drift": -0.2947656319883888,
+    "d_drift_maha": -0.39197928331466964,
+    "d_novel_maha": 0.33311870100783875,
+    "interval": -0.2545356433272579
+  },
+  "PAD_saturation_frac_above_1p95": 0.4,
+  "spearman_interval_vs_AUROC": -0.2545356433272579,
+  "compensation_effect": {
+    "mean": {
+      "median_DNR_before": 0.9229050392540765,
+      "median_DNR_after": 0.8343033208506742,
+      "median_d_drift_ratio": 0.7769930172172217,
+      "median_d_novel_ratio": 0.8157320924008302,
+      "median_AUROC_before": 0.6482867837604377,
+      "median_AUROC_after": 0.7467693971343606
+    },
+    "coral": {
+      "median_DNR_before": 0.9229050392540765,
+      "median_DNR_after": 0.4902061652351131,
+      "median_d_drift_ratio": 0.260322321356343,
+      "median_d_novel_ratio": 0.4858646485276716,
+      "median_AUROC_before": 0.6482867837604377,
+      "median_AUROC_after": 0.790152155536771
+    }
+  }
+}
