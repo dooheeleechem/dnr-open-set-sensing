@@ -1,127 +1,97 @@
-# DNR: a difficulty axis for open-set evaluation in chemical sensing
+# Drift-to-Novelty Ratio (DNR) for open-set evaluation in chemical sensing
 
-Analysis code for
+Analysis code for the manuscript
 
-> S. Kang and D.-H. Lee, *When Drift Outweighs Novelty: A Difficulty Axis for
-> Open-Set Evaluation in Chemical Sensing* (submitted).
+> **When Drift Outweighs Novelty: A Difficulty Axis for Open-Set Evaluation in Chemical Sensing**
+> Seungmin Kang and Doo-Hee Lee
 
-Companion to Kim et al., *Chemosensors* **2026**, 14, 189,
-https://doi.org/10.3390/chemosensors14090189
+The drift-to-novelty ratio places the displacement of a known class and the
+separation of an unknown class on one scale, so that the difficulty of an
+open-set evaluation can be reported alongside openness. This repository
+reproduces every number, table and figure in the paper.
 
-## Quick start
+## Datasets
 
-```bash
-pip install -r requirements.txt
-# download the dataset first (see "Data" below) into ./data/
-python analysis_main.py --data-dir ./data --out-dir ./results
-python make_figure2.py
-python make_figure3.py
-```
+None of the raw data is redistributed here. Download from the UCI Machine
+Learning Repository and place as shown.
 
-`raw_results.csv` and `experiment_summary.json` in this repository are the
-outputs of that command, so the results can be inspected without re-running it.
-
-## Files
-
-| File | Purpose |
-|---|---|
-| `analysis_main.py` | full analysis, single seed, no manual steps |
-| `make_figure1.py` | Figure 1, built from values published in ref. 4 of the paper |
-| `make_figure2.py` | Figure 2, four-panel core result |
-| `make_figure3.py` | Figure 3, DNR landscape |
-| `raw_results.csv` | one row per split-by-unknown combination |
-| `experiment_summary.json` | headline metrics reported in the paper |
-| `requirements.txt` | pinned minimum versions |
-
-## What it computes
-
-Two displacements, both measured from the source known-class manifold, in one
-feature space fitted on the source known classes.
-
-    d_drift = mean over known classes of  || centroid_target(c) - centroid_source(c) ||
-    d_novel = min  over known classes of  || centroid_target(unknown) - centroid_source(c) ||
-    DNR     = d_drift / d_novel
-
-`DNR >= 1` means a known analyte has been displaced by drift as far as an unknown
-analyte sits from the library. No novelty score defined on that manifold can then
-separate the two.
-
-The unknown class is measured in the **target** batch, not the source. That choice
-matters: it is the only definition under which drift compensation, which acts on
-the target, can move `d_novel` as well as `d_drift`. Under the source-side
-definition `d_novel` is invariant to compensation by construction, and RQ4 becomes
-unanswerable.
-
-## Distances
-
-Three metrics are computed in parallel so that no conclusion rests on one choice.
-
-| key | metric | notes |
+| Dataset | DOI | Place under |
 |---|---|---|
-| `maha` | Mahalanobis | pooled within-class covariance, Ledoit-Wolf shrinkage |
-| `euclid` | Euclidean | on standardized features |
-| `energy` | energy distance | two-sample, subsampled to 400 per class |
+| Gas Sensor Array Drift | [10.24432/C5RP6W](https://doi.org/10.24432/C5RP6W) | `data/Dataset/batch{1..10}.dat` |
+| Gas Sensor Array Drift at Different Concentrations | [10.24432/C5MK6M](https://doi.org/10.24432/C5MK6M) | `data_conc/batch{1..10}.dat` |
+| Twin gas sensor arrays | [10.24432/C5MW3K](https://doi.org/10.24432/C5MW3K) | `data_twin/twin+gas+sensor+arrays.zip` |
 
-## Splits
+All three are distributed under CC BY 4.0. The twin archive is 195 MB
+compressed and 2.77 GB expanded; `extract_twin.py` streams it from the zip
+without expanding it to disk.
 
-Both split families used in the literature, following Yao et al. 2023.
+For convenience, `twin_features.csv` contains the 640 x 64 feature matrix that
+`extract_twin.py` produces, so the replication analysis can be run without
+downloading the raw traces.
 
-- **Setting 1** — source = batch 1, target = batch K (K = 2..10). Interval grows.
-- **Setting 2** — source = batch K, target = batch K+1. Interval fixed.
-
-Each split is repeated with each of the six gases held out as the unknown class,
-giving 108 split-by-unknown combinations.
-
-## Open-set baselines
-
-Three deliberately simple, fully reproducible scorers. The point is not to win a
-benchmark; it is to test whether DNR predicts performance regardless of scorer.
-
-- `AUROC_maha` — minimum Mahalanobis distance to a known centroid
-- `AUROC_knn` — mean distance to the 5 nearest known training samples
-- `AUROC_msp` — one minus the maximum softmax probability of a multinomial logistic model
-
-## Drift compensation (RQ4)
-
-- `mean` — mean-shift alignment of the target batch onto the source
-- `coral` — second-order (covariance) alignment
-
-For each, the code reports the ratio by which `d_drift` and `d_novel` change. If
-compensation shrinks both by similar factors, DNR barely improves and the
-apparent gain in known-class accuracy is bought at the cost of novelty
-separability. That is the RQ4 result.
-
-## Running it
+## Reproducing the paper
 
 ```bash
 pip install -r requirements.txt
-python analysis_main.py --data-dir ./data --out-dir ./results
+
+python analysis_main.py      # 95 splits, DNR, AUROC, MMD, PAD  -> raw_results.csv
+python analysis_extra.py     # cluster bootstrap, detector-specific rho, segmented fit
+python analysis_extra2.py    # oracle compensation, centroid-only DNR intervals
+python analysis_dnr_ci.py    # full-pipeline per-split DNR intervals (run repeatedly)
+python analysis_conc.py      # concentration confounding control
+python extract_twin.py       # feature extraction from raw twin traces
+python analysis_twin.py      # replication on 80 board-pair splits
+
+python make_figure1.py       # openness is blind        (Figure 1)
+python make_figure2.py       # DNR core results         (Figure 2)
+python make_figure3.py       # DNR landscape            (Figure 3)
+python make_figure4.py       # external replication     (Figure 4)
+python make_toc.py           # table-of-contents graphic
 ```
 
-Expected input: `data/batch1.dat` ... `data/batch10.dat`, in the original UCI
-format, one sample per line:
+Every script fixes the same seed (`SEED = 20260822`) and writes to `results/`.
 
-```
-<class>;<concentration> 1:<v1> 2:<v2> ... 128:<v128>
-```
+## Outputs included here
 
-Outputs:
+| File | Contents |
+|---|---|
+| `raw_results.csv` | per-split DNR, AUROC and competing descriptors, 100 rows |
+| `experiment_summary.json` | headline statistics of the primary analysis |
+| `extra_statistics.json` | cluster bootstrap intervals, descriptor x detector table, segmented regression |
+| `extra_statistics2.json` | per-split DNR uncertainty summary, compensation with and without unknown contamination |
+| `dnr_uncertainty.csv` | per-split DNR interval, metric held fixed |
+| `dnr_uncertainty_full.csv` | per-split DNR interval, whole estimation chain re-fitted per resample |
+| `dnr_uncertainty_full.json` | summary of the full-pipeline intervals |
+| `concentration_analysis.json` | concentration descriptors, partial correlations, restricted-window reanalysis |
+| `twin_features.csv` | 640 x 64 features derived from the twin arrays raw traces |
+| `twin_results.csv` | per-split DNR and AUROC for the 80 board-pair splits |
+| `twin_analysis.json` | replication correlations with cluster bootstrap intervals |
+| `twin_extra.json` | twin breakpoint, closed-set and board-identification checks |
 
-- `results/raw_results.csv` — one row per split-by-unknown combination, 26 columns
-- `results/experiment_summary.json` — headline metrics, including the Spearman
-  correlation between DNR and each AUROC, and between batch interval and AUROC
+## Notes on method
 
-## Reproducibility
+- Distances are Mahalanobis under a Ledoit-Wolf shrunk pooled within-class
+  covariance, estimated from the source known classes only. Euclidean and
+  energy-distance variants are computed in parallel.
+- `d_novel` uses the unknown class **in the target batch**, so that drift
+  compensation is able to affect it.
+- Confidence intervals for correlations are cluster bootstrap intervals over
+  batch pairs and over analytes, reported as the union of the two. This is a
+  deliberately conservative sensitivity interval, not a formal multiway cluster
+  interval. Resampling splits independently understates the uncertainty because
+  a batch pair contributes up to six splits.
+- Per-split DNR intervals re-fit the standardization, the shrunk covariance and
+  the centroids on every bootstrap resample. Holding the metric fixed narrows
+  the interval by a factor of 1.5 in median width.
+- Compensation is computed in a deployable variant, with alignment statistics
+  from the entire target batch, and an oracle variant, with statistics from
+  known target samples only. The contrast isolates the effect of unknown
+  samples entering the transformation.
 
-`SEED = 20260822` fixes the energy-distance subsampling and the logistic solver.
-No other stochastic component. Verified end to end on synthetic data with the
-same file format before the real data was obtained.
+## Citation
 
-## Data
+Cite the manuscript, and the datasets under their own DOIs.
 
-UCI Gas Sensor Array Drift Dataset, DOI `10.24432/C5RP6W`, CC BY 4.0.
-Cite Vergara et al., *Sens. Actuators B* **2012**, 166-167, 320-329 and
-Rodriguez-Lujan et al., *Chemom. Intell. Lab. Syst.* **2014**, 130, 123-134,
-as the dataset page requires.
+## License
 
-Not redistributed here. Download separately into `data/`.
+MIT for the code. The datasets keep their own CC BY 4.0 licenses.

@@ -1,0 +1,31 @@
+{
+  "n_splits": 95,
+  "dnr_uncertainty": {
+    "definitely_below_1": 45,
+    "uncertain_spans_1": 20,
+    "definitely_above_1": 30,
+    "median_relative_width": 0.14767411853065193
+  },
+  "compensation_unknown_contamination": {
+    "mean": {
+      "median_DNR_all_target": 0.8343033208506742,
+      "median_DNR_known_only": 0.6940907356785161,
+      "median_dnovel_ratio_all_target": 0.8157320924008302,
+      "median_dnovel_ratio_known_only": 0.9629330509607011,
+      "median_ddrift_ratio_all_target": 0.7769930172172217,
+      "median_ddrift_ratio_known_only": 0.7693777286480921,
+      "median_AUROC_all_target": 0.7467693971343606,
+      "median_AUROC_known_only": 0.8261706040733943
+    },
+    "coral": {
+      "median_DNR_all_target": 0.4902061652351131,
+      "median_DNR_known_only": 0.10997422916992147,
+      "median_dnovel_ratio_all_target": 0.4858646485276716,
+      "median_dnovel_ratio_known_only": 2.34801478587372,
+      "median_ddrift_ratio_all_target": 0.260322321356343,
+      "median_ddrift_ratio_known_only": 0.3029864071071179,
+      "median_AUROC_all_target": 0.790152155536771,
+      "median_AUROC_known_only": 0.99371586497335
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "n_splits": 95,
+  "Q1": {
+    "conc_gap": {
+      "rho_vs_DNR": -0.009008409989366738,
+      "rho_vs_AUROC": -0.033121830667974674
+    },
+    "conc_shift": {
+      "rho_vs_DNR": 0.10356753150167704,
+      "rho_vs_AUROC": -0.07757413928417489
+    },
+    "conc_spread": {
+      "rho_vs_DNR": 0.14635746775531483,
+      "rho_vs_AUROC": -0.14365960195593747
+    }
+  },
+  "Q2": {
+    "unconditional": -0.7233762597984321,
+    "ctrl_gap": -0.7241012989504273,
+    "ctrl_gap_shift": -0.7223259009475935,
+    "ctrl_all": -0.7172088795130809
+  },
+  "Q3": {
+    "window_ppmv": [
+      50.0,
+      250.0
+    ],
+    "n_splits": 68,
+    "rho_within_window": -0.8741077222582736,
+    "rho_same_splits_full": -0.7730274458907507,
+    "median_DNR_window": 0.7932683871416262,
+    "median_DNR_full": 0.8575980859575257,
+    "frac_above_1_window": 0.35294117647058826,
+    "frac_above_1_full": 0.3382352941176471
+  }
+}

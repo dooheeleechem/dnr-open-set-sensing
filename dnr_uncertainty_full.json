@@ -1,0 +1,11 @@
+{
+  "n_splits": 95,
+  "n_bootstrap": 400,
+  "definitely_above_1": 28,
+  "indeterminate": 25,
+  "definitely_below_1": 42,
+  "pct_definitely_above_1": 29.47368421052631,
+  "pct_indeterminate": 26.31578947368421,
+  "pct_definitely_below_1": 44.21052631578947,
+  "median_relative_width": 0.3294728565762568
+}
