@@ -4,7 +4,7 @@ from matplotlib.patches import Circle, FancyArrowPatch
 RED,TEAL,INK,GREY="#C94F4A","#4AACB0","#33373B","#8A8A8A"
 plt.rcParams.update({"font.family":"sans-serif","font.sans-serif":["Arial","DejaVu Sans"]})
 fig,axes=plt.subplots(1,2,figsize=(3.25,1.75),dpi=600)
-plt.subplots_adjust(left=0.02,right=0.98,top=0.80,bottom=0.13,wspace=0.14)
+plt.subplots_adjust(left=0.02,right=0.98,top=0.82,bottom=0.10,wspace=0.14)
 
 def panel(ax,drift,title,col,verdict):
     ax.set_xlim(0,10); ax.set_ylim(0,6); ax.axis("off"); ax.set_facecolor("white")
@@ -27,6 +27,8 @@ panel(axes[0],2.2,"DNR < 1",TEAL,"low drift-novelty confounding")
 panel(axes[1],5.0,"DNR > 1",RED,"high drift-novelty confounding")
 fig.text(0.5,0.955,"A difficulty axis for open-set chemical sensing",
          ha="center",fontsize=7.4,color=INK,fontweight="bold")
-fig.savefig("toc_graphic.png",dpi=600,facecolor="white",
-            bbox_inches="tight",pad_inches=0.02)
-print("saved 3.25 x 1.75 in @600 dpi")
+# full canvas, no tight bbox: ACS Sensors TOC is 8.25 x 4.45 cm (3.25 x 1.75 in)
+fig.savefig("toc_graphic.png",dpi=600,facecolor="white")
+from PIL import Image
+w,h=Image.open("toc_graphic.png").size
+print(f"saved {w} x {h} px  ({w/600:.3f} x {h/600:.3f} in, ratio {w/h:.3f})")

@@ -38,6 +38,7 @@ from scipy.spatial.distance import cdist
 from sklearn.covariance import LedoitWolf
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import StandardScaler
+from scipy.stats import spearmanr
 
 SEED = 20260822
 rng = np.random.default_rng(SEED)
@@ -134,8 +135,11 @@ def compute_dnr(batches, src: int, tgt: int, unknown: int, metric: str = "maha")
       d_novel : min over known classes of || centroid_target(unknown) - centroid_source(c) ||
                 i.e. how far the UNKNOWN class sits from the nearest known class.
 
-    DNR = d_drift / d_novel. DNR >= 1 means a known analyte has been displaced as
-    far as an unknown one, so no score defined on that manifold can separate them.
+    DNR = d_drift / d_novel. DNR >= 1 means a known analyte has been displaced on
+    average at least as far as the nearest unknown class sits from the library, a
+    magnitude crossover that marks a regime of strong drift-novelty confounding
+    for distance-based scores. It compares magnitudes and discards direction, so
+    it is not a proof of inseparability.
 
     Measuring the unknown class in the TARGET batch (not the source) matters: it
     is the only definition under which drift compensation, which acts on the
@@ -303,6 +307,31 @@ def compensate(batches, src: int, tgt: int, mode: str = "mean"):
     return out
 
 
+
+def spearman_ci(x, y, n_boot: int = 5000, alpha: float = 0.05):
+    """Spearman rho with a percentile bootstrap confidence interval.
+
+    Splits are resampled with replacement; the interval therefore reflects the
+    variability of the split population, which is the quantity a reader needs when
+    asking whether the ranking of descriptors in Table 1 is stable.
+    """
+    x = np.asarray(x, float)
+    y = np.asarray(y, float)
+    ok = np.isfinite(x) & np.isfinite(y)
+    x, y = x[ok], y[ok]
+    rho = spearmanr(x, y)[0]
+    n = len(x)
+    boot = np.empty(n_boot)
+    rs = np.random.default_rng(SEED)
+    for b in range(n_boot):
+        idx = rs.integers(0, n, n)
+        if len(np.unique(x[idx])) < 3 or len(np.unique(y[idx])) < 3:
+            boot[b] = np.nan
+            continue
+        boot[b] = spearmanr(x[idx], y[idx])[0]
+    lo, hi = np.nanpercentile(boot, [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    return float(rho), float(lo), float(hi)
+
 # --------------------------------------------------------------------------
 # 6. Main sweep
 # --------------------------------------------------------------------------
@@ -382,7 +411,8 @@ def main():
             for k in ("AUROC_maha", "AUROC_knn", "AUROC_msp")
         },
         "spearman_competing_predictors_vs_AUROC_maha": {
-            k: float(df[[k, "AUROC_maha"]].corr(method="spearman").iloc[0, 1])
+            k: dict(zip(("rho", "ci_lo", "ci_hi"),
+                        spearman_ci(df[k], df["AUROC_maha"])))
             for k in ("DNR_maha", "DNR_euclid", "DNR_energy", "MMD_ratio",
                       "MMD_drift", "MMD_novel", "PAD_drift", "d_drift_maha",
                       "d_novel_maha", "interval")
