@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 import numpy as np, pandas as pd
 
-d=pd.read_csv("../Step4/results/raw_results.csv")
+d=pd.read_csv("results/raw_results.csv")
 d["pair"]=d.src.astype(str)+r"$\rightarrow$"+d.tgt.astype(str)
 u=d.drop_duplicates(subset=["src","tgt","unknown"])
 gases=["Ethanol","Ethylene","Ammonia","Acetaldehyde","Acetone","Toluene"]
@@ -49,5 +49,6 @@ cb=fig.colorbar(im,ax=ax,pad=0.02,fraction=0.035,
 cb.ax.set_yticklabels(["0.05","0.2","1","3","10"],fontsize=FS_TK)
 cb.set_label("DNR (log scale)",fontsize=FS_AX)
 cb.ax.axhline(0.0,color=INK,lw=2.0)
-fig.savefig("fig_03_dnr_landscape.png",dpi=200,bbox_inches="tight",pad_inches=0.25,facecolor="white")
+# Supporting Information Figure S1 in the submitted manuscript
+fig.savefig("results/figS1_dnr_landscape.png",dpi=200,bbox_inches="tight",pad_inches=0.25,facecolor="white")
 print("cells:",int(np.isfinite(M).sum()),"| >1:",int((M>1).sum()),"| n/a:",int(np.isnan(M).sum()))

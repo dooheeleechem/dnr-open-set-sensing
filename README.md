@@ -41,15 +41,23 @@ python analysis_dnr_ci.py    # full-pipeline per-split DNR intervals (run repeat
 python analysis_conc.py      # concentration confounding control
 python extract_twin.py       # feature extraction from raw twin traces
 python analysis_twin.py      # replication on 80 board-pair splits
+python analysis_twin_extra.py  # twin breakpoint and feature sanity checks
 
 python make_figure1.py       # openness is blind        (Figure 1)
 python make_figure2.py       # DNR core results         (Figure 2)
-python make_figure3.py       # DNR landscape            (Figure 3)
-python make_figure4.py       # external replication     (Figure 4)
+python make_figure4.py       # external replication     (Figure 3)
+python make_figure3.py       # DNR landscape            (Figure S1)
 python make_toc.py           # table-of-contents graphic
 ```
 
-Every script fixes the same seed (`SEED = 20260822`) and writes to `results/`.
+The script names follow the order in which the analyses were written, not the
+figure order in the submitted manuscript. `make_figure4.py` produces Figure 3 and
+`make_figure3.py` produces Figure S1 of the Supporting Information.
+
+Every script fixes the same seed (`SEED = 20260822`), reads from `results/` and
+writes to `results/`. The output files listed below ship at the repository root,
+so copy them into `results/` before running any script that consumes them, or
+regenerate them with the analysis scripts.
 
 ## Outputs included here
 
@@ -75,6 +83,12 @@ Every script fixes the same seed (`SEED = 20260822`) and writes to `results/`.
   energy-distance variants are computed in parallel.
 - `d_novel` uses the unknown class **in the target batch**, so that drift
   compensation is able to affect it.
+- Twin-array features are cut at the valve events of the published acquisition
+  protocol: 50 s of carrier air, 100 s of gas, 450 s of purging, so the baseline
+  window is 0-45 s, the rising phase 50-150 s and the decaying phase 150-300 s.
+  Averaging the normalized response of 120 recordings on a common time grid puts
+  the onset of the rise at 54.5 s and the peak at 136.5 s, which is the protocol
+  plus sensor lag.
 - Confidence intervals for correlations are cluster bootstrap intervals over
   batch pairs and over analytes, reported as the union of the two. This is a
   deliberately conservative sensitivity interval, not a formal multiway cluster

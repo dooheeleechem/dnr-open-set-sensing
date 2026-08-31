@@ -1,22 +1,22 @@
 {
-  "breakpoint_DNR": 0.6953493887823035,
+  "breakpoint_DNR": 0.6311902249969582,
   "breakpoint_DNR_ci": [
-    0.6349746055141332,
-    0.73083357074494
+    0.515,
+    0.69
   ],
-  "slope_left": -0.34622245034627547,
-  "slope_right": -1.5144138059226486,
-  "r2_gain": 0.22578833158225042,
-  "closed_set_cv_acc": 0.95,
+  "slope_left": 0.33108115827666995,
+  "slope_right": -1.1353006612814287,
+  "r2_gain": 0.34862335485057494,
+  "closed_set_cv_acc": 0.9859,
   "leave_one_board_out_acc": {
-    "B1": 0.95625,
-    "B2": 0.99375,
-    "B3": 0.98125,
-    "B4": 0.75,
-    "B5": 0.7125
+    "B1": 0.975,
+    "B2": 0.9812,
+    "B3": 0.925,
+    "B4": 0.95,
+    "B5": 0.625
   },
-  "leave_one_board_out_mean": 0.8787500000000001,
-  "board_predictable_acc": 0.978125,
+  "leave_one_board_out_mean": 0.8912,
+  "board_predictable_acc": 0.9953,
   "n_recordings": 640,
   "n_features": 64
 }

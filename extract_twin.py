@@ -1,8 +1,12 @@
 """Feature extraction for the Twin Gas Sensor Arrays dataset (UCI 361).
 
 Each recording is a 600 s, 100 Hz acquisition from an eight-sensor metal-oxide
-array. The gas is admitted at 60 s and withdrawn at 180 s, which the onset
-detection reported in the accompanying log confirms.
+array. The acquisition protocol of Fonollosa et al. 2016 is 50 s of carrier air,
+100 s of the gas mixture and 450 s of purging, so the gas is admitted at 50 s and
+withdrawn at 150 s. Averaging the normalized array response of 120 randomly
+chosen recordings on a common time grid puts the onset of the rise at 54.5 s and
+the peak at 136.5 s, consistent with that protocol once sensor lag is allowed
+for.
 
 The eight features per sensor follow Vergara et al. 2012, the definition used
 to build the drift dataset analyzed in the main text, so that the two datasets
@@ -16,7 +20,7 @@ import numpy as np, pandas as pd
 from scipy.signal import lfilter
 
 FS = 100.0
-BASE_END, GAS_ON, GAS_OFF, DECAY_END = 55.0, 60.0, 180.0, 300.0
+BASE_END, GAS_ON, GAS_OFF, DECAY_END = 45.0, 50.0, 150.0, 300.0
 ALPHAS = (0.1, 0.01, 0.001)
 GASES = {"GEy": "Ethylene", "GEa": "Ethanol", "GCO": "CO", "GMe": "Methane"}
 PAT = re.compile(r"B(\d)_G(\w\w)_F(\d+)_R(\d+)\.txt$")

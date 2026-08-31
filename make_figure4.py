@@ -121,8 +121,9 @@ a.set_ylim(5.7,-0.7); a.set_xlim(0,1.03)
 a.set_xlabel("|Spearman $\\rho$| between DNR and open-set AUROC",fontsize=FS_AX)
 a.set_title("Concentration does not account for the association",fontsize=FS_AX,pad=6)
 
-for s,a_ in zip(["(A)","(B)","(C)","(D)"],[ax[0,0],ax[0,1],ax[1,0],ax[1,1]]): lab(a_,s)
-fig.savefig("results/fig_04_external.png",dpi=200,bbox_inches="tight",
+for s,a_ in zip(["(a)","(b)","(c)","(d)"],[ax[0,0],ax[0,1],ax[1,0],ax[1,1]]): lab(a_,s)
+# Figure 3 in the submitted manuscript
+fig.savefig("results/fig_03_external.png",dpi=200,bbox_inches="tight",
             pad_inches=0.25,facecolor="white")
 print("twin rho",round(TW["correlations"]["DNR_maha|maha"]["rho"],3),
       "bp",round(TX["breakpoint_DNR"],3))

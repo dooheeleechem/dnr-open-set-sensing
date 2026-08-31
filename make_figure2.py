@@ -117,7 +117,7 @@ a.text(0.98,0.97,"circles: alignment from entire target\ndiamonds: alignment fro
        transform=a.transAxes,fontsize=FS_AN-1,ha="right",va="top",color=INK,
        bbox=dict(boxstyle="round,pad=0.35",fc="white",ec="#333333",lw=1.0))
 
-for t,a_ in zip(["(A)","(B)","(C)","(D)"],[ax[0,0],ax[0,1],ax[1,0],ax[1,1]]): lab(a_,t)
+for t,a_ in zip(["(a)","(b)","(c)","(d)"],[ax[0,0],ax[0,1],ax[1,0],ax[1,1]]): lab(a_,t)
 fig.savefig("results/fig_02_dnr_core.png",dpi=200,bbox_inches="tight",
             pad_inches=0.25,facecolor="white")
 print("n",len(u),"rho",round(rho,3),"bp",SEG["breakpoint_DNR"])

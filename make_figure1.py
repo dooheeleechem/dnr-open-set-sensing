@@ -93,7 +93,7 @@ ax.text(0.5,0.985,
     transform=ax.transAxes,fontsize=FS_ANN,ha="center",va="top",bbox=box)
 ax.legend(fontsize=FS_LEG,loc="lower right",frameon=False,ncol=2)
 
-panel(axes[0],"(A)"); panel(axes[1],"(B)")
-fig.savefig("/sessions/youthful-amazing-euler/mnt/outputs/next1/fig_01_openness_blind.png",
+panel(axes[0],"(a)"); panel(axes[1],"(b)")  # ACS: lowercase panel labels
+fig.savefig("results/fig_01_openness_blind.png",
             dpi=200,bbox_inches="tight",pad_inches=0.25,facecolor="white")
 print("saved; range",min(allv),max(allv),"spread",max(allv)-min(allv))
