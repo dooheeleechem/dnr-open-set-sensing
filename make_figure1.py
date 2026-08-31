@@ -24,12 +24,12 @@ BROWN, INK, GREY = "#9C6B4A", "#33373B", "#6E6E6E"
 COL = {"CCSA_EVM":BLUE,"CCSA_MMF":TEAL,"CCSA_MMF_CAC":ORANGE,"CACSA":RED}
 MRK = {"CCSA_EVM":"o","CCSA_MMF":"s","CCSA_MMF_CAC":"^","CACSA":"D"}
 
-FS_LABEL,FS_AXIS,FS_TICK,FS_LEG,FS_ANN = 28,16,15,13,12
+FS_LABEL,FS_AXIS,FS_TICK,FS_LEG,FS_ANN = 28,16,15,15,14
 plt.rcParams.update({"font.family":"sans-serif",
     "font.sans-serif":["Arial","DejaVu Sans"],"pdf.fonttype":42})
 
-fig,axes = plt.subplots(1,2,figsize=(20,10),dpi=200)
-plt.subplots_adjust(hspace=0.55,wspace=0.38,top=0.80,bottom=0.12,left=0.06,right=0.955)
+fig,axes = plt.subplots(1,2,figsize=(13,6.5),dpi=200)
+plt.subplots_adjust(wspace=0.42,top=0.80,bottom=0.12,left=0.075,right=0.945)
 
 def style(ax):
     ax.set_facecolor("white")
@@ -49,20 +49,18 @@ for k,v in S1.items():
             label=k.replace("_"," "),zorder=3)
 ax.set_xlabel("Target batch (source = batch 1)",fontsize=FS_AXIS)
 ax.set_ylabel("Open-set recognition performance (%)",fontsize=FS_AXIS)
-ax.set_xticks(batches); ax.set_ylim(40,112)
-ax.set_title("Setting 1 — time interval grows with batch index",fontsize=FS_AXIS,pad=6)
+ax.set_xticks(batches); ax.set_ylim(40,132)
+ax.set_title("Setting 1: time interval grows with batch index",fontsize=FS_AXIS,pad=6)
 
 ax2=ax.twinx()
 ax2.plot(batches,[OPENNESS]*9,lw=3.2,color=BROWN,ls=(0,(6,3)),zorder=3)
 ax2.set_ylabel("Openness (%)",fontsize=FS_AXIS,color=BROWN)
-ax2.set_ylim(0,72); ax2.tick_params(labelsize=FS_TICK,colors=BROWN)
+ax2.set_ylim(0,92); ax2.tick_params(labelsize=FS_TICK,colors=BROWN)
 ax2.spines["top"].set_visible(False); ax2.spines["right"].set_color(BROWN)
-ax2.annotate("openness = 10.56 %, constant across every split",
-    xy=(8.6,OPENNESS),xycoords="data",xytext=(5.55,4.2),textcoords="data",
-    fontsize=FS_ANN,color=BROWN,va="center",
-    arrowprops=dict(arrowstyle="->",color=BROWN,lw=1.6,
-                    connectionstyle="arc3,rad=-0.25"))
-ax.legend(fontsize=FS_LEG,loc="lower left",frameon=False,ncol=2)
+ax2.text(2.15,OPENNESS+1.6,"openness = 10.56 %, constant across every split",
+    fontsize=FS_ANN-1,color=BROWN,va="bottom",ha="left")
+ax.legend(fontsize=FS_LEG-3,loc="upper left",frameon=False,ncol=2,
+          columnspacing=1.2,handlelength=2.0)
 
 # ---------------- (B) all 72 reported values at one openness
 ax=axes[1]; style(ax)
@@ -78,7 +76,7 @@ for i,(name,D) in enumerate([("Setting 1",S1),("Setting 2",S2)]):
     ax.text(i+1.29,m,f"mean {m:.1f}",fontsize=FS_ANN,va="center",
             ha="left",color=INK)
 lo,hi=min(allv),max(allv)
-ax.set_xlim(0.50,2.88); ax.set_ylim(40,112)
+ax.set_xlim(0.50,2.95); ax.set_ylim(40,124)
 ax.set_xticks([1,2]); ax.set_xticklabels(["Setting 1\n(batch 1 → K)","Setting 2\n(batch K → K+1)"])
 ax.set_ylabel("Open-set recognition performance (%)",fontsize=FS_AXIS)
 ax.set_title("Every point below has the same openness",fontsize=FS_AXIS,pad=6)
@@ -87,11 +85,11 @@ ax.annotate("",xy=(0.64,lo),xytext=(0.64,hi),
 ax.text(0.58,(lo+hi)/2,f"{hi-lo:.1f} points",rotation=90,fontsize=FS_ANN+1,
         color=RED,ha="right",va="center",fontweight="bold")
 box=dict(boxstyle="round,pad=0.45",facecolor="white",edgecolor="#333333",lw=1.1)
-ax.text(0.5,0.985,
+ax.text(0.5,0.975,
     "72 reported values, openness = 10.56 % for all of them\n"
     f"observed range {lo:.2f} to {hi:.2f} %",
-    transform=ax.transAxes,fontsize=FS_ANN,ha="center",va="top",bbox=box)
-ax.legend(fontsize=FS_LEG,loc="lower right",frameon=False,ncol=2)
+    transform=ax.transAxes,fontsize=FS_ANN-2,ha="center",va="top",bbox=box)
+ax.legend(fontsize=FS_LEG-3,loc="lower right",frameon=False,ncol=2,columnspacing=1.0)
 
 panel(axes[0],"(a)"); panel(axes[1],"(b)")  # ACS: lowercase panel labels
 fig.savefig("results/fig_01_openness_blind.png",

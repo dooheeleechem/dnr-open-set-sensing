@@ -20,9 +20,9 @@ cmap=LinearSegmentedColormap.from_list("dnr",[TEAL,"#EFF4F3","#FBEFE8",RED])
 cmap.set_bad("#E8E8E8")
 norm=TwoSlopeNorm(vmin=np.log10(0.03),vcenter=0.0,vmax=np.log10(12))
 
-FS_LAB,FS_AX,FS_TK,FS_AN=28,16,15,11
+FS_LAB,FS_AX,FS_TK,FS_AN=28,16,15,13
 plt.rcParams.update({"font.family":"sans-serif","font.sans-serif":["Arial","DejaVu Sans"]})
-fig,ax=plt.subplots(figsize=(20,10),dpi=200)
+fig,ax=plt.subplots(figsize=(13,6.5),dpi=200)
 plt.subplots_adjust(left=0.11,right=0.88,top=0.84,bottom=0.12)
 im=ax.imshow(np.log10(M).T,aspect="auto",cmap=cmap,norm=norm)
 ax.set_facecolor("white")

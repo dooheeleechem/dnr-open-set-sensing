@@ -13,11 +13,11 @@ C2 = json.load(open("results/extra_statistics2.json"))["compensation_unknown_con
 
 RED,ORANGE,TEAL,BLUE,BROWN = "#C94F4A","#E8943A","#4AACB0","#5B8DB8","#9C6B4A"
 INK,GREY = "#33373B","#6E6E6E"
-FS_LAB,FS_AX,FS_TK,FS_LG,FS_AN,FS_BAR = 28,16,15,13,12,10
+FS_LAB,FS_AX,FS_TK,FS_LG,FS_AN,FS_BAR = 28,16,15,15,14,12
 plt.rcParams.update({"font.family":"sans-serif","font.sans-serif":["Arial","DejaVu Sans"]})
 
-fig,ax = plt.subplots(2,2,figsize=(20,10),dpi=200)
-plt.subplots_adjust(hspace=0.55,wspace=0.38,top=0.88,bottom=0.09,left=0.06,right=0.97)
+fig,ax = plt.subplots(2,2,figsize=(13,6.5),dpi=200)
+plt.subplots_adjust(hspace=0.72,wspace=0.44,top=0.87,bottom=0.10,left=0.075,right=0.99)
 
 def style(a):
     a.set_facecolor("white"); a.grid(True,color="#DDDDDD",ls="--",lw=0.6,zorder=0)
@@ -43,11 +43,11 @@ rho,p = spearmanr(u.DNR_maha,u.AUROC_maha)
 a.set_xlabel("DNR  (Mahalanobis, log scale)",fontsize=FS_AX)
 a.set_ylabel("Open-set AUROC",fontsize=FS_AX)
 a.set_title("Performance falls, then inverts, as DNR grows",fontsize=FS_AX,pad=6)
-a.text(0.98,0.97,f"Spearman $\\rho$ = {rho:.3f}   (n = {len(u)})",transform=a.transAxes,
-       fontsize=FS_AN,ha="right",va="top",
+a.text(0.03,0.97,f"Spearman $\\rho$ = {rho:.3f}   (n = {len(u)})",transform=a.transAxes,
+       fontsize=FS_AN-1,ha="left",va="top",
        bbox=dict(boxstyle="round,pad=0.4",fc="white",ec="#333333",lw=1.0))
-a.legend(fontsize=FS_LG-2,loc="lower left",frameon=False,ncol=1,
-         handlelength=2.2,labelspacing=0.35)
+a.legend(fontsize=FS_LG-4,loc="lower left",frameon=False,ncol=1,
+         handlelength=1.8,labelspacing=0.25)
 
 # (B) predictor comparison with cluster CIs
 a=ax[0,1]; style(a)
@@ -66,11 +66,11 @@ a.barh(range(len(v)),v,color=cols,height=0.68,zorder=3,
        xerr=e,error_kw=dict(ecolor=INK,elinewidth=1.3,capsize=3.5,alpha=0.85))
 for i,x in enumerate(v): a.text(x+e[1][i]+0.02,i,f"{x:.2f}",va="center",fontsize=FS_BAR,color=INK)
 a.set_yticks(range(len(v))); a.set_yticklabels(names,fontsize=FS_TK-1)
-a.set_ylim(-0.65,9.05)
-a.set_xlim(0,1.12); a.set_xlabel("|Spearman $\\rho$| with open-set AUROC   (cluster bootstrap CI)",
+a.set_ylim(-0.65,9.55)
+a.set_xlim(0,1.30); a.set_xlabel("|Spearman $\\rho$| with open-set AUROC\n(cluster bootstrap CI)",
                                  fontsize=FS_AX)
 a.axvspan(0,0.40,color=GREY,alpha=0.07,zorder=1)
-a.text(0.395,8.72,"magnitude-only measures",fontsize=FS_AN,color=GREY,ha="right",va="center")
+a.text(0.02,9.25,"magnitude-only measures shaded",fontsize=FS_AN-1,color=GREY,ha="left",va="center")
 a.set_title("Ratios predict; domain-shift magnitudes predict less",fontsize=FS_AX,pad=6)
 
 # (C) DNR band vs AUROC
@@ -100,21 +100,21 @@ o=np.argsort(xs)
 a.plot(np.array(xs)[o],np.array(ys)[o],color=GREY,lw=1.4,ls="--",zorder=2)
 for n,x,y,c,m in cond:
     a.scatter(x,y,s=200,color=c,marker=m,edgecolor="white",lw=1.2,zorder=4)
-a.set_xscale("log"); a.set_xlim(0.075,1.65); a.set_ylim(0.555,1.075)
+a.set_xscale("log"); a.set_xlim(0.070,3.60); a.set_ylim(0.545,1.115)
 a.axhline(0.5,color=BROWN,ls=":",lw=1.5,zorder=1)
-off={"no compensation":(1.00,-0.050,"center"),
-     "mean-shift":(1.00,+0.030,"center"),
-     "mean-shift, oracle":(1.00,+0.030,"center"),
-     "CORAL":(1.00,-0.050,"center"),
-     "CORAL, oracle":(1.05,+0.030,"left")}
+off={"no compensation":(1.10,-0.004,"left"),
+     "mean-shift":(1.00,-0.058,"center"),
+     "mean-shift, oracle":(1.10,-0.004,"left"),
+     "CORAL":(1.00,+0.035,"center"),
+     "CORAL, oracle":(1.00,-0.060,"center")}
 for n,x,y,c,m in cond:
     fx,dy,ha=off[n]
     a.annotate(n,(x,y),xytext=(x*fx,y+dy),fontsize=FS_AN-1,color=INK,ha=ha)
 a.set_xlabel("Median DNR after compensation  (log scale)",fontsize=FS_AX)
 a.set_ylabel("Median open-set AUROC",fontsize=FS_AX)
 a.set_title("Changing the geometry moves performance with it",fontsize=FS_AX,pad=6)
-a.text(0.98,0.97,"circles: alignment from entire target\ndiamonds: alignment from known target only",
-       transform=a.transAxes,fontsize=FS_AN-1,ha="right",va="top",color=INK,
+a.text(0.985,0.975,"circles: alignment from entire target\ndiamonds: alignment from known target only",
+       transform=a.transAxes,fontsize=FS_AN-3,ha="right",va="top",color=INK,
        bbox=dict(boxstyle="round,pad=0.35",fc="white",ec="#333333",lw=1.0))
 
 for t,a_ in zip(["(a)","(b)","(c)","(d)"],[ax[0,0],ax[0,1],ax[1,0],ax[1,1]]): lab(a_,t)
